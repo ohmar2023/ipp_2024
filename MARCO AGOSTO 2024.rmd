@@ -230,7 +230,6 @@ muestra %>%
   adorn_totals(c("col","row")) 
 ,filter = 'top',options = list(pageLength = 5000, autoWidth = TRUE ))
 
-
 ```
 
 ### Control de selección

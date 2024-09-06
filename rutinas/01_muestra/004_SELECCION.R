@@ -52,7 +52,7 @@ aux_2 <-  seleccion %>%
          PPT_b = PPT_b+a,
          Control = Nh - PPT_b)
 
-seleccion <- aux_2                      
+seleccion <- aux_2                   
 
 
 # ------------------------------------------------------------------------------

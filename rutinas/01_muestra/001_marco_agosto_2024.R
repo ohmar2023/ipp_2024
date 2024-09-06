@@ -57,3 +57,30 @@ marco_canasta_08 <- directorio %>%
 export(marco_canasta_08,
        "productos/01_marco/marco_canasta_08.rds")
 
+export(marco_canasta_08 %>% select(ruc_principal,id_empresa,
+                                   codigo_seccion,codigo_actividad_eco,
+                                   ventas_totales,dom_2),
+       "productos/01_marco/marco_canasta_08.XLSX")
+
+#-------------------------------------------------------------------------------
+# GRAFICOS 
+#-------------------------------------------------------------------------------
+marco_canasta_08 %>% select(ruc_principal,id_empresa,
+                            codigo_seccion,codigo_actividad_eco,
+                            ventas_totales,dom_2) %>% View()
+
+marco_canasta_08 %>% group_by(dom_2) %>% 
+  summarise(desv = sd(ventas_totales,na.rm = T)) %>% View()
+
+marco_canasta_08 %>%
+  rename("dom" = dom_2) %>% 
+  filter(dom == "2C") %>% 
+  ggplot(aes(x=id_empresa, y=ventas_totales, fill = id_empresa)) + 
+  geom_bar(stat="identity", position = position_dodge()) +
+  labs(x="",y="")+
+  #theme(legend.position = "") +
+  theme(legend.position = "",axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))
+
+
+
+

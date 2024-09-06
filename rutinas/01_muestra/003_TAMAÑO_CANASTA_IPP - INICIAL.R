@@ -53,7 +53,7 @@ mutate(numerador=(N*desv)^2,
        denominador=((N-1)/N)*((er*ventas/z)^2)+N*(desv^2),
        tam=numerador/denominador) %>% 
 left_join(select(tnr,dominio,tnr_pro),by="dominio") %>% 
-mutate(tnr_pro=ifelse(is.na(tnr_pro),0,tnr_pro/100),
+mutate(tnr_pro=ifelse(is.na(tnr_pro),0.2,tnr_pro/100),
        n3=ceiling(tam/(1-tnr_pro)),
        n4=ifelse(n3>N,N,n3))
 
@@ -74,7 +74,7 @@ tamanio_final <- inc_for %>%
                    n_cod_act_eco),by = "dominio")
 
 #-------------------------------------------------------------------------------
-# EXPORTANDO MARCO CANASTA 2021 
+# EXPORTANDO TAMAÑO
 #-------------------------------------------------------------------------------
 export(tamanio_final,
        "productos/02_tamanio_seleccion/tamanio.rds")
