@@ -14,13 +14,18 @@ library(rio)
 # LECTURA DEL DIRECTORIO 2009-2021: 20230321: 10306119 número de casos en el 
 # directorio
 #-------------------------------------------------------------------------------
-directorio <- readRDS("insumos/01_directorio2022/reem_20240110.rds") %>% 
+directorio <- readRDS("insumos/01_directorio2022/directorio_20240318.rds") %>% 
   filter(anio == 2022)
 
 #-------------------------------------------------------------------------------
 # Codigos productos y actividad princiapal canasta
 #-------------------------------------------------------------------------------
-canasta <- read_excel("insumos/02_listado_act/Muestreo_INPP_julio_2024_v1.xlsx") %>% 
+
+# canasta <- read_excel("insumos/02_listado_act/Muestreo_INPP_julio_2024_v1.xlsx") %>% 
+#   mutate(codigo_actividad_eco = str_replace(codigo_actividad_eco,"[.]",""))
+
+# Nueva canasta enviada ---
+canasta <- read_excel("insumos/02_listado_act/marco_canasta_08_v1_septiembre.xlsx") %>% 
   mutate(codigo_actividad_eco = str_replace(codigo_actividad_eco,"[.]",""))
 
 table(nchar(canasta$codigo_actividad_eco))
@@ -41,6 +46,11 @@ marco_canasta_08 <- directorio %>%
   group_by(dom_2) %>% 
   mutate(n_cod_act_eco = n_distinct(codigo_actividad_eco)) %>% 
   ungroup()
+
+marco_canasta_08 %>% dim()
+table(marco_canasta_08$codigo_seccion,marco_canasta_08$tamanou_plazas)
+names(marco_canasta_08)
+
 # 
 # marco_canasta_08 %>% 
 #   select(dom_2,n_cod_act_eco) %>% 

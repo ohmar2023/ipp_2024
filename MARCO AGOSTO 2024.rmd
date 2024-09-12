@@ -1,7 +1,7 @@
 ---
-title: "Análisis del Marco y Tamaño Muestral del IPP-DN (DIEE-2021)"
-author: "OMAR LLAMBO"
-subtitle: Dirección de infraestructura de estadistica y muestreo (DINEM)
+title: "Análisis del Marco y Tamaño Muestral <br> IPP-DN (REEM-2022)"
+author: ""
+subtitle: Dirección de infraestructura de estadística y muestreo (DINEM)
 output:
   html_document:
     toc: yes
@@ -119,32 +119,31 @@ Son todos los ingresos de la empresa proveniente de las transacciones comerciale
 
 Esta variable es importante, pues se considera como variable de diseño para la elaboración del diseño muestral, sin embargo, una vez revisada la información se observa que no todas las empresas cuentan con registros.
 
-Si consideramos unicamente las empresas que no presentan el valor de VENTAS TOTALES y las agrupamos por tamaño de empresa, se tiene lo siguiente:
+Si consideramos unicamente las empresas que no presentan el valor de VENTAS TOTALES y las agrupamos por dominio, se tiene lo siguiente:
 
 ```{r, message = FALSE,echo = FALSE}
-tamano_na <- marco %>% 
-  filter(situacion==1 & is.na(ventas_totales)) %>%
-  group_by(tamanou_plazas) %>% 
-  summarise("VENTAS NA"=n()) %>% 
-  rename("TAMANO"=tamanou_plazas)
-#knitr::kable(tamano_na,align = "cc")
-
-tamano_total <- marco %>% 
-  filter(situacion==1) %>%
-  group_by(tamanou_plazas) %>% 
-  summarise("TOTAL"=n()) %>%
-  rename("TAMANO"=tamanou_plazas)
-
-tabla_na_total <-tamano_na %>% 
-  left_join(tamano_total,by="TAMANO")
-
-tabla_na_total <- tabla_na_total %>%
-                mutate("PORCENTAJE NA"=round((`VENTAS NA`/TOTAL)*100,2)) %>%
-                select(TAMANO,`VENTAS NA`,TOTAL,`PORCENTAJE NA`)
-knitr::kable(tabla_na_total,align = "cc")
+# tamano_na <- marco %>% 
+#   filter(situacion==1 & is.na(ventas_totales)) %>%
+#   group_by(tamanou_plazas) %>% 
+#   summarise("VENTAS NA"=n()) %>% 
+#   rename("TAMANO"=tamanou_plazas)
+# #knitr::kable(tamano_na,align = "cc")
+# 
+# tamano_total <- marco %>% 
+#   filter(situacion==1) %>%
+#   group_by(tamanou_plazas) %>% 
+#   summarise("TOTAL"=n()) %>%
+#   rename("TAMANO"=tamanou_plazas)
+# 
+# tabla_na_total <-tamano_na %>% 
+#   left_join(tamano_total,by="TAMANO")
+# 
+# tabla_na_total <- tabla_na_total %>%
+#                 mutate("PORCENTAJE NA"=round((`VENTAS NA`/TOTAL)*100,2)) %>%
+#                 select(TAMANO,`VENTAS NA`,TOTAL,`PORCENTAJE NA`)
+# knitr::kable(tabla_na_total,align = "cc")
 ```
 
-Es importante visualizar el porcenataje de valores perdidos en la variable de interés por cada dominio de estudio:
 
 ```{r, message = FALSE,echo = FALSE}
 tamano_na <- marco %>% 
@@ -184,7 +183,8 @@ tnr <- rbind(tnr, marco_sin_inc_for %>% mutate(dom=paste0(tamanou_plazas,codigo_
                filter(!dom %in% tnr$dominio) %>% select(dominio=dom) %>% unique()%>% mutate(tnr_max=20.0,                                                                        tnr_pro=20.0,                                                                        tnr_min=20.0))
 
 datatable(
-tnr %>% mutate(tnr_pro=round(tnr_pro,2),
+tnr %>% filter(dominio %in% marco$dom_2) %>% 
+  mutate(tnr_pro=round(tnr_pro,2),
                tnr_max=round(tnr_max,2),
                tnr_min=round(tnr_min,2)) %>% 
   select(Dominio=dominio, tnr_max, tnr_pro, tnr_min)
@@ -247,7 +247,7 @@ marco %>%
 
 ```
 
-### Tamaño final
+## Tamaño final
 
 Considerando los incrementos de muestra que se ocasionan por la distribución en 
 cada estrato, se tiene como tamaño muestral final lo siguiente:

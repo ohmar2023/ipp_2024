@@ -12,10 +12,23 @@ library(openxlsx)
 library(rio)
 
 #-------------------------------------------------------------------------------
+# Marco
+#-------------------------------------------------------------------------------
+
+marco <- readRDS("productos/01_marco/marco_canasta_08.rds")
+
+#-------------------------------------------------------------------------------
 # TNR DE ENESEM 2021
 #-------------------------------------------------------------------------------
 tnr_1 <- readRDS("insumos/03_tnr/tnr_enesem_historica.rds") %>% 
   select(dominio,tnr_max, tnr_pro, tnr_min)
+
+#-------------------------------------------------------------------------------
+# NO INCLUSION FORZOSA
+#-------------------------------------------------------------------------------
+marco_sin_inc_for <- marco %>% 
+  mutate(inclusion_forzosa=ifelse(tamanou_plazas==5,1,0)) %>% 
+  filter(inclusion_forzosa==0)
 
 #-------------------------------------------------------------------------------
 # TNR PARA EL RESTO DE DOMINIOS: El resto de dominios que no aparecen en ENESEM

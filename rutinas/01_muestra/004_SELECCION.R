@@ -75,7 +75,7 @@ muestra %>%
   mutate(dif = n_muestra-n_pro) %>% adorn_totals() %>% View()
 
 # ------------------------------------------------------------------------------
-# MUESTRA SCON INCLUSIÓN FORSOZA ----------------------------------------------
+# MUESTRA CON INCLUSIÓN FORSOZA ----------------------------------------------
 # ------------------------------------------------------------------------------
 
 muestra_inc_forzosa <- marco %>% 
@@ -97,8 +97,17 @@ marco %>%
 
 
 # exportando --------------------------------------------------------
-export(muestra,"productos/02_tamanio_seleccion/muestra.rds")
+muestra_var <- muestra %>% left_join(marco) %>% 
+  select(id_empresa,ruc_principal,razon_social,nombre_comercial,
+         codigo_actividad_eco,codigo_provincia,codigo_canton,
+         codigo_parroquia,forma_institucional,calle_principal,
+         numero,interseccion,kilometro,urbanizacion,nombre_edificio,
+         numero_piso,numero_oficina,ciudadela,barrio,manzana,referencia,
+         telefono,nombre_contacto,punto_x,punto_y,zona_censal,sector_censal,
+         manzana_censal,tamanou_plazas,dom_2) 
 
+export(muestra_var,"productos/02_tamanio_seleccion/muestra.rds")
+export(muestra_var,"productos/02_tamanio_seleccion/muestra.xlsx")
   
 
 

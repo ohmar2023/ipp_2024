@@ -1,4 +1,5 @@
 rm(list=ls())
+
 library(dplyr)
 library(tidyverse)
 library(openxlsx)
@@ -23,8 +24,8 @@ tnr <- readRDS("productos/01_marco/tnr_ipp.rds")
 # INCLUSION FORZOSA
 #-------------------------------------------------------------------------------
 inc_for <- marco %>% 
-mutate(inclusion_forzosa=ifelse(tamanou_plazas==5,1,0)) %>% 
-filter(inclusion_forzosa==1)
+  mutate(inclusion_forzosa=ifelse(tamanou_plazas==5,1,0)) %>% 
+  filter(inclusion_forzosa==1)
 
 #-------------------------------------------------------------------------------
 # NO INCLUSION FORZOSA
