@@ -25,7 +25,7 @@ directorio <- readRDS("insumos/01_directorio2022/directorio_20240318.rds") %>%
 #   mutate(codigo_actividad_eco = str_replace(codigo_actividad_eco,"[.]",""))
 
 # Nueva canasta enviada ---
-canasta <- read_excel("insumos/02_listado_act/marco_canasta_08_v1_septiembre.xlsx") %>% 
+canasta <- read_excel("insumos/02_listado_act/Actividades_CAB-SIPP_12092024.xlsx") %>% 
   mutate(codigo_actividad_eco = str_replace(codigo_actividad_eco,"[.]",""))
 
 table(nchar(canasta$codigo_actividad_eco))
