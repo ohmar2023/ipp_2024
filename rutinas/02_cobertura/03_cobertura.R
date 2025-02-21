@@ -9,8 +9,10 @@ source("rutinas/02_cobertura/999_librerias.R")
 
 bdd_cober <- read_excel("intermedios/01_base_cobertura/bdd_cober.xlsx")
 
+#bdd_cober <- bdd_cober %>% filter(grepl(dom_2,pattern = "5"))
+
 #--------------------------------------------------------------------------
-# Exploratorio Empresas ---------------------------------------------------
+# Exploratorio Empresas
 #--------------------------------------------------------------------------
 
 # todas las empresas de la muestra
@@ -18,7 +20,7 @@ emp_todas <-bdd_cober %>%
   group_by(dom_2) %>% 
   summarise(n_muestra =n())
 
-#empresas visitadas/encontradas
+# empresas visitadas/encontradas
 emp_encon <- bdd_cober %>% filter(establecimientos_investigados == "Investigado",
                                   empresa_ubicada_no_ubicada == "Ubicada") %>% 
   group_by(dom_2) %>% 
@@ -30,7 +32,7 @@ emp_no_encon <- bdd_cober %>% filter(establecimientos_investigados == "Investiga
   group_by(dom_2) %>% 
   summarise(n_no_ubi = n()) 
 
-#empresas que no fueron gestionadas/visitadas: 29
+# empresas que no fueron gestionadas/visitadas: 29
 emp_no_inv <- bdd_cober %>% filter(establecimientos_investigados == "No investigado") %>%
   group_by(dom_2) %>% 
   summarise(n_no_gest = n())
@@ -48,42 +50,60 @@ tabla_4 <- resumen_emp %>% select(dom_2, n_muestra, n_ubi) %>%
 export(tabla_4, "productos/03_cobertura/01_tablas_informe/tabla_4.xlsx")
 
 #--------------------------------------------------------------------------
-# Exploratorio prouctos --------------------------------------------------
+# Exploratorio prouctos 
 #--------------------------------------------------------------------------
 
 bdd_cober_01 <- bdd_cober %>% pivot_longer(cols = c(16:20),
                                            names_to = "productos",
-                                           values_to = "productos_cod")
-
-bdd_cober_01 %>% 
-  filter(!is.na(productos_cod)) %>% 
-  group_by(dom_2) %>% 
-  summarise(n_prod = n()) %>% 
-  left_join(emp_encon)
+                                           values_to = "productos_cod") %>% 
+  filter(total_de_productos != 0) %>% 
+  filter(!is.na(productos_cod))
   
-bdd_cober_01 %>% 
+# efectividad de empresas por dominio: tabla 6
+
+tabla_6 <- bdd_cober_01 %>% 
+  filter(!duplicated(id_empresa)) %>% 
   group_by(dom_2) %>% 
-  summarise(sum(!is.na(productos_cod)))
+  summarise(n_efect = n()) %>% 
+  left_join(emp_todas) %>% 
+  adorn_totals(c("row")) %>% 
+  mutate(porcent = round(n_efect/n_muestra,4))
 
+export(tabla_6, "productos/03_cobertura/01_tablas_informe/tabla_6.xlsx")
 
+# cantidad de productos por dominio
+emp_efect_prod <- bdd_cober_01 %>% 
+  group_by(dom_2) %>% 
+  summarise(n_efect_prod = n())
+
+# Empresas que tienen mas de 5 productos por dominio
+
+bdd_cober_01 %>% 
+  filter(total_de_productos >= 5) %>% 
+  group_by(dom_2) %>% 
+  summarise(n_efect_prod = n())
+
+# Frecuencia de productos
 aux <- bdd_cober_01 %>% 
   filter(!is.na(productos_cod)) %>% 
   group_by(productos_cod) %>% 
   summarise(n_prod = n()) 
-  
 
-tabla_5 <- table(aux$n_prod) %>% 
+tabla_7 <- table(aux$n_prod) %>% 
   data.frame() %>% 
-  mutate(porc = round(Freq/sum(Freq),4),
+  mutate(porc = round(Freq/sum(Freq), 4),
          porc_acum = cumsum(porc)) %>% 
   select("Tomas" = Var1, 
          "Total de Productos" = Freq,
          "% Productos" = porc,
          "% Acumulado" = porc_acum) 
 
-export(tabla_5, "productos/03_cobertura/01_tablas_informe/tabla_5.xlsx")
+export(tabla_7, "productos/03_cobertura/01_tablas_informe/tabla_7.xlsx")
 
  
+
+
+
 
 
 
