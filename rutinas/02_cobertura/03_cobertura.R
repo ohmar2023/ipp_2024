@@ -58,7 +58,8 @@ bdd_cober_01 <- bdd_cober %>% pivot_longer(cols = c(16:20),
                                            values_to = "productos_cod") %>% 
   filter(total_de_productos != 0) %>% 
   filter(!is.na(productos_cod))
-  
+
+
 # efectividad de empresas por dominio: tabla 6
 
 tabla_6 <- bdd_cober_01 %>% 
@@ -83,14 +84,27 @@ bdd_cober_01 %>%
   group_by(dom_2) %>% 
   summarise(n_efect_prod = n())
 
+# Tabla 7: Frecuencua de produtos por cantidad de empresas
+
+tabla_7 <- table(bdd_cober$total_de_productos, useNA = "ifany") %>% 
+  data.frame() %>% 
+  filter(Var1 != 0) %>% 
+  rename("Cantidad de Productos" = Var1, "Empresas" = Freq) %>% 
+  adorn_totals(c("row")) %>% 
+  mutate(Porcentaje = round(Empresas/255,4))
+
+export(tabla_7, "productos/03_cobertura/01_tablas_informe/tabla_7.xlsx")
+
+
 # Frecuencia de productos
 aux <- bdd_cober_01 %>% 
   filter(!is.na(productos_cod)) %>% 
   group_by(productos_cod) %>% 
   summarise(n_prod = n()) 
 
-tabla_7 <- table(aux$n_prod) %>% 
+tabla_8 <- table(aux$n_prod) %>% 
   data.frame() %>% 
+  arrange(desc(Var1)) %>% 
   mutate(porc = round(Freq/sum(Freq), 4),
          porc_acum = cumsum(porc)) %>% 
   select("Tomas" = Var1, 
@@ -98,7 +112,7 @@ tabla_7 <- table(aux$n_prod) %>%
          "% Productos" = porc,
          "% Acumulado" = porc_acum) 
 
-export(tabla_7, "productos/03_cobertura/01_tablas_informe/tabla_7.xlsx")
+export(tabla_8, "productos/03_cobertura/01_tablas_informe/tabla_8.xlsx")
 
  
 
